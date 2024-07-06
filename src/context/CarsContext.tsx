@@ -108,9 +108,7 @@ export const defaultValues: CarsContextType = {
   carToDelete: null,
   setCarToDelete: () => {},
   errorMessage: "",
-  setErrorMessage: () => {
-    ("");
-  },
+  setErrorMessage: () => {},
 };
 
 const CarsContext = createContext<CarsContextType>(defaultValues);

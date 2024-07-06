@@ -1,50 +1,43 @@
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
-import axios from "axios"; // You may need to mock axios responses
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import LoginFormSection from "../components/LoginFormSection";
-import { AuthContext } from "../context/AuthContext";
+import { AuthProvider } from "../context/AuthContext";
+import axios from "axios";
 
-jest.mock("axios");
+jest.mock("axios"); // Mock axios
 
-describe("LoginFormSection component", () => {
-  it("submits the form and handles successful response", async () => {
-    const mockContextValue = {
-      Auth: [],
-      errorMessage: "",
-      setErrorMessage: jest.fn(),
-    };
+describe("LoginFormSection", () => {
+  it("displays error message on failed login", async () => {
+    const errorMessage = "Invalid credentials";
+    // Mock Axios to simulate failed login
+    axios.post = jest
+      .fn()
+      .mockImplementationOnce(() =>
+        Promise.reject({ response: { data: { message: errorMessage } } })
+      );
 
-    render(
-      <AuthContext.Provider value={mockContextValue}>
+    const { getByText, getByPlaceholderText } = render(
+      <AuthProvider>
         <LoginFormSection />
-      </AuthContext.Provider>
+      </AuthProvider>
     );
 
-    // Fill in the form fields
-    fireEvent.change(screen.getByPlaceholderText("Email"), {
+    // Fill out form fields
+    fireEvent.change(getByPlaceholderText("Email"), {
       target: { value: "test@example.com" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password123" },
+    fireEvent.change(getByPlaceholderText("Password"), {
+      target: { value: "password" },
     });
 
-    // Mock the axios post call
-    (axios.post as jest.Mock).mockResolvedValueOnce({
-      data: { token: "mockToken123" },
-    });
+    // Submit form
+    fireEvent.submit(getByText("Sign In"));
 
-    // Submit the form
-    fireEvent.click(screen.getByText("Sign In"));
+    // Wait for error message to appear
+    const errorElement = await waitFor(() => getByText(errorMessage));
+    expect(errorElement).toBeInTheDocument();
 
-    // Wait for the async operations to complete
-    await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        "tokenBinar",
-        "mockToken123"
-      );
-      expect(window.location.href).toBe("/Auth-management");
-      expect(mockContextValue.setErrorMessage).not.toHaveBeenCalled();
-    });
+    // Optionally, check other assertions related to error handling
   });
 
-  // Add more test cases as needed
+  // Add more test cases for other branches and scenarios as needed
 });

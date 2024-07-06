@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "jest.setup.ts"],
+  "include": ["src", "jest.setup.ts", "src/context/CarsContext.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

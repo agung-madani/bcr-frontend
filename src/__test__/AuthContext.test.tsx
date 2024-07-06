@@ -1,52 +1,94 @@
-import React, { useContext } from "react";
-import { render } from "@testing-library/react";
-import { AuthContext, AuthProvider } from "../context/AuthContext";
+import { render, act, fireEvent } from "@testing-library/react";
+import { AuthProvider, AuthContext, LoginData } from "../context/AuthContext";
+import axios from "axios";
 
-// Mock child component that consumes AuthContext
-const MockConsumer: React.FC = () => {
-  const { errorMessage, setErrorMessage } = useContext(AuthContext);
+jest.mock("axios");
 
-  // Example usage of context values
-  const handleSetError = () => {
-    setErrorMessage("Test error message");
+const mockAxios = axios as jest.Mocked<typeof axios>;
+
+describe("AuthContext", () => {
+  beforeEach(() => {
+    localStorage.clear(); // Clear localStorage before each test
+  });
+
+  const renderWithContext = (component: JSX.Element) => {
+    return render(<AuthProvider>{component}</AuthProvider>);
   };
 
-  return (
-    <div>
-      <span>{errorMessage}</span>
-      <button onClick={handleSetError}>Set Error</button>
-    </div>
-  );
-};
+  it("sets error message on failed login", async () => {
+    const errorMessage = "Invalid credentials";
+    mockAxios.post.mockRejectedValueOnce({
+      response: { data: { message: errorMessage } },
+    });
 
-describe("AuthProvider", () => {
-  it("renders children without crashing", () => {
-    const { getByText } = render(
-      <AuthProvider>
-        <MockConsumer />
-      </AuthProvider>
-    );
+    let renderedComponent: any;
+    await act(async () => {
+      renderedComponent = renderWithContext(
+        <AuthContext.Consumer>
+          {({ login, errorMessage }) => (
+            <>
+              <button
+                onClick={async () => {
+                  try {
+                    await login({
+                      email: "test@example.com",
+                      password: "password",
+                    } as LoginData);
+                  } catch (error) {
+                    // Error handling
+                  }
+                }}
+              >
+                Login
+              </button>
+              {errorMessage && <div>{errorMessage}</div>}
+            </>
+          )}
+        </AuthContext.Consumer>
+      );
+    });
 
-    expect(getByText("Set Error")).toBeInTheDocument();
+    const button = renderedComponent.getByText("Login");
+    fireEvent.click(button);
+
+    const errorElement = await renderedComponent.findByText(errorMessage);
+    expect(errorElement).toBeInTheDocument();
   });
 
-  it("provides default values to AuthContext", () => {
-    const { errorMessage, setErrorMessage } = useContext(AuthContext);
-    expect(errorMessage).toEqual("");
-    expect(typeof setErrorMessage).toBe("function");
-  });
+  it("sets token on successful login", async () => {
+    const token = "mocked-token";
+    mockAxios.post.mockResolvedValueOnce({ data: { token } });
 
-  it("updates errorMessage via setErrorMessage", () => {
-    const { getByText } = render(
-      <AuthProvider>
-        <MockConsumer />
-      </AuthProvider>
-    );
+    let renderedComponent: any;
+    await act(async () => {
+      renderedComponent = renderWithContext(
+        <AuthContext.Consumer>
+          {({ login }) => (
+            <button
+              onClick={async () => {
+                try {
+                  await login({
+                    email: "test@example.com",
+                    password: "password",
+                  } as LoginData);
+                } catch (error) {
+                  // Error handling
+                }
+              }}
+            >
+              Login
+            </button>
+          )}
+        </AuthContext.Consumer>
+      );
+    });
 
-    const setErrorButton = getByText("Set Error");
-    setErrorButton.click();
+    const button = renderedComponent.getByText("Login");
+    fireEvent.click(button);
 
-    const errorMessageElement = getByText("Test error message");
-    expect(errorMessageElement).toBeInTheDocument();
+    // Wait for token to be set in localStorage
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(localStorage.getItem("tokenBinar")).toBe(token);
   });
 });

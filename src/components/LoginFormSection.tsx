@@ -1,11 +1,10 @@
 import "../index.css";
 import { useForm, Controller } from "react-hook-form";
-import { AuthContext, loginData } from "../context/AuthContext";
+import { AuthContext, LoginData } from "../context/AuthContext";
 import { useContext } from "react";
-import axios from "axios";
 
 const LoginFormSection = () => {
-  const { errorMessage, setErrorMessage } = useContext(AuthContext);
+  const { errorMessage, login } = useContext(AuthContext);
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       email: "",
@@ -13,23 +12,13 @@ const LoginFormSection = () => {
     },
   });
 
-  const onSubmit = (data: loginData) => {
-    {
-      axios
-        .post(
-          "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/login",
-          data
-        )
-        .then((response) => {
-          localStorage.setItem("tokenBinar", response.data.token);
-          window.location.href = "/cars-management";
-        })
-        .catch((error) => {
-          setErrorMessage(error.response.data.message);
-          reset();
-        });
-    }
+  const onSubmit = async (data: LoginData) => {
+    try {
+      await login(data);
+      reset();
+    } catch (error) {}
   };
+
   return (
     <div className="flex-1 flex justify-center items-center bg-neutral-01">
       <div className="max-w-md md:max-w-lg w-full md:p-8">
