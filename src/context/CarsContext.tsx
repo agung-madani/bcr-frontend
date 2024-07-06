@@ -140,7 +140,7 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     console.log(dateTime, convertedPassengerCount, convertedwithDriver);
 
     axios
-      .get("http://localhost:3030/cars", {
+      .get("collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars", {
         headers: localStorage.getItem("tokenBinar")
           ? {
               Authorization: `Bearer ${localStorage.getItem("tokenBinar")}`,
@@ -185,15 +185,22 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           }
         : {};
 
-      await axios.post("http://localhost:3030/cars", carData, {
-        headers: headers,
-      });
+      await axios.post(
+        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        carData,
+        {
+          headers: headers,
+        }
+      );
 
       setSuccessMessage("Car added successfully!");
 
-      const response = await axios.get("http://localhost:3030/cars", {
-        headers: headers,
-      });
+      const response = await axios.get(
+        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        {
+          headers: headers,
+        }
+      );
       const activeCars = response.data.data;
       setCars(activeCars);
     } catch (error) {
@@ -211,14 +218,21 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           }
         : {};
 
-      await axios.put(`http://localhost:3030/cars/${id}`, formData, {
-        headers: headers,
-      });
+      await axios.put(
+        `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
+        formData,
+        {
+          headers: headers,
+        }
+      );
       setSuccessMessage("Car updated successfully!");
 
-      const response = await axios.get("http://localhost:3030/cars", {
-        headers: headers,
-      });
+      const response = await axios.get(
+        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        {
+          headers: headers,
+        }
+      );
       const activeCars = response.data.data;
       setCars(activeCars);
     } catch (error) {
@@ -236,17 +250,23 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             }
           : {};
         console.log(carToDelete.id);
-        await axios.delete(`http://localhost:3030/cars/${carToDelete.id}`, {
-          headers: headers,
-        });
+        await axios.delete(
+          `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${carToDelete.id}`,
+          {
+            headers: headers,
+          }
+        );
 
         setSuccessMessage("Car deleted successfully!");
         setShowDeleteConfirmation(false);
         setCarToDelete(null);
 
-        const response = await axios.get("http://localhost:3030/cars", {
-          headers: headers,
-        });
+        const response = await axios.get(
+          "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+          {
+            headers: headers,
+          }
+        );
         const activeCars = response.data.data;
         console.log(activeCars);
         setCars(activeCars);

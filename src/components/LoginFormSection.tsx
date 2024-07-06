@@ -16,7 +16,7 @@ const LoginFormSection = () => {
   const onSubmit = (data: loginData) => {
     {
       axios
-        .post("http://localhost:3030/login", data)
+        .post("collective-kristel-sawangan-26-6deb48bd.koyeb.app/login", data)
         .then((response) => {
           localStorage.setItem("tokenBinar", response.data.token);
           window.location.href = "/cars-management";

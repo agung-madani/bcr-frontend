@@ -29,9 +29,12 @@ const MainContentEditArea = () => {
               Authorization: `Bearer ${localStorage.getItem("tokenBinar")}`,
             }
           : {};
-        const response = await axios.get(`http://localhost:3030/cars/${id}`, {
-          headers: headers,
-        });
+        const response = await axios.get(
+          `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
+          {
+            headers: headers,
+          }
+        );
         const car = response.data.data;
         console.log(car);
         for (const key in car) {
