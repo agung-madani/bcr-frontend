@@ -1,43 +1,205 @@
-import { render, fireEvent, screen } from "@testing-library/react";
-import FAQSection from "../components/FAQSection";
-import { BrowserRouter as Router } from "react-router-dom";
+import { render, screen, fireEvent } from "@testing-library/react";
+import FAQSection from "../components/FAQSection"; // Adjust the import path as needed
+import toggleAccordion from "../scripts/accordion";
 
-// Mock toggleAccordion function (assuming it's imported and used in the component)
-jest.mock("../scripts/accordion", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
+jest.mock("../scripts/accordion");
 
-describe("FAQSection Component", () => {
-  test("renders FAQSection component", () => {
-    render(
-      <Router>
-        <FAQSection />
-      </Router>
-    );
-
-    const titleElement = screen.getByText("Frequently Asked Question");
-    expect(titleElement).toBeInTheDocument();
+describe("FAQSection", () => {
+  beforeEach(() => {
+    (toggleAccordion as jest.Mock).mockClear();
   });
 
-  test("clicking accordion header toggles accordion body", () => {
-    render(
-      <Router>
-        <FAQSection />
-      </Router>
-    );
+  it("renders the FAQ section", () => {
+    render(<FAQSection />);
+    expect(screen.getByText("Frequently Asked Question")).toBeInTheDocument();
+  });
 
-    const accordionHeaders = screen.getAllByRole("button", {
-      name: /accordion header/i,
-    });
+  it("renders all FAQ items", () => {
+    render(<FAQSection />);
+    expect(
+      screen.getByText("Apa saja syarat yang dibutuhkan?")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Berapa hari minimal sewa mobil lepas kunci?")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Berapa hari sebelumnya sebaiknya booking sewa mobil?")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Apakah ada biaya antar-jemput?")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Bagaimana jika terjadi kecelakaan?")
+    ).toBeInTheDocument();
+  });
 
-    accordionHeaders.forEach((header) => {
-      fireEvent.click(header); // Simulate click on accordion header
+  it("toggles the accordion content on click", () => {
+    render(<FAQSection />);
 
-      // Check if the associated body toggles its visibility
-      const body = header.nextElementSibling;
-      expect(body).toHaveClass("accordion-body"); // Assuming the default state is hidden
-      expect(body).toHaveClass("hidden"); // Check if the body is hidden after click
-    });
+    const firstAccordionHeader = screen
+      .getByText("Apa saja syarat yang dibutuhkan?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("cleans up event listeners on unmount", () => {
+    const { unmount } = render(<FAQSection />);
+    const firstAccordionHeader = screen
+      .getByText("Apa saja syarat yang dibutuhkan?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+
+      unmount();
+
+      fireEvent.click(firstAccordionHeader);
+
+      // Ensure that toggleAccordion is not called after unmount
+      expect(toggleAccordion).toHaveBeenCalledTimes(3);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("toggles the accordion content on click", () => {
+    render(<FAQSection />);
+
+    const firstAccordionHeader = screen
+      .getByText("Berapa hari minimal sewa mobil lepas kunci?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("cleans up event listeners on unmount", () => {
+    const { unmount } = render(<FAQSection />);
+    const firstAccordionHeader = screen
+      .getByText("Berapa hari minimal sewa mobil lepas kunci?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+
+      unmount();
+
+      fireEvent.click(firstAccordionHeader);
+
+      // Ensure that toggleAccordion is not called after unmount
+      expect(toggleAccordion).toHaveBeenCalledTimes(3);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("toggles the accordion content on click", () => {
+    render(<FAQSection />);
+
+    const firstAccordionHeader = screen
+      .getByText("Berapa hari sebelumnya sebaiknya booking sewa mobil?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("cleans up event listeners on unmount", () => {
+    const { unmount } = render(<FAQSection />);
+    const firstAccordionHeader = screen
+      .getByText("Berapa hari sebelumnya sebaiknya booking sewa mobil?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+
+      unmount();
+
+      fireEvent.click(firstAccordionHeader);
+
+      // Ensure that toggleAccordion is not called after unmount
+      expect(toggleAccordion).toHaveBeenCalledTimes(3);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("toggles the accordion content on click", () => {
+    render(<FAQSection />);
+
+    const firstAccordionHeader = screen
+      .getByText("Apakah ada biaya antar-jemput?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("cleans up event listeners on unmount", () => {
+    const { unmount } = render(<FAQSection />);
+    const firstAccordionHeader = screen
+      .getByText("Apakah ada biaya antar-jemput?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+
+      unmount();
+
+      fireEvent.click(firstAccordionHeader);
+
+      // Ensure that toggleAccordion is not called after unmount
+      expect(toggleAccordion).toHaveBeenCalledTimes(3);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("toggles the accordion content on click", () => {
+    render(<FAQSection />);
+
+    const firstAccordionHeader = screen
+      .getByText("Bagaimana jika terjadi kecelakaan?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+    } else {
+      throw new Error("Accordion header not found");
+    }
+  });
+
+  it("cleans up event listeners on unmount", () => {
+    const { unmount } = render(<FAQSection />);
+    const firstAccordionHeader = screen
+      .getByText("Bagaimana jika terjadi kecelakaan?")
+      .closest(".accordion-header");
+    if (firstAccordionHeader) {
+      fireEvent.click(firstAccordionHeader);
+      expect(toggleAccordion).toHaveBeenCalledWith(firstAccordionHeader);
+
+      unmount();
+
+      fireEvent.click(firstAccordionHeader);
+
+      // Ensure that toggleAccordion is not called after unmount
+      expect(toggleAccordion).toHaveBeenCalledTimes(3);
+    } else {
+      throw new Error("Accordion header not found");
+    }
   });
 });

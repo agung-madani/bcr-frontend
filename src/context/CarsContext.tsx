@@ -81,7 +81,7 @@ export interface CarsContextType {
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const defaultValues: CarsContextType = {
+export const defaultValues: CarsContextType = {
   addCar: async () => {},
   updateCar: async () => {},
   handleDelete: async () => {},
@@ -137,10 +137,8 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const convertedPassengerCount = Number(passengerCount);
     const convertedwithDriver = withDriver === "true";
 
-    console.log(dateTime, convertedPassengerCount, convertedwithDriver);
-
     axios
-      .get("collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars", {
+      .get("https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars", {
         headers: localStorage.getItem("tokenBinar")
           ? {
               Authorization: `Bearer ${localStorage.getItem("tokenBinar")}`,
@@ -148,7 +146,6 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
           : {},
       })
       .then((response) => {
-        console.log(response);
         const activeCars = response.data.data.filter(
           (car: {
             available: boolean;
@@ -163,14 +160,10 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             car.capacity >= convertedPassengerCount
         );
         if (response.data.message === "All cars retrieved successfully.") {
-          console.log("Halo Admin");
-          console.log(response.data.data);
           setCars(response.data.data);
         } else {
-          console.log("Halo User");
           setCars(activeCars);
         }
-        console.log(activeCars);
       })
       .catch((error) => {
         console.error(error);
@@ -186,7 +179,7 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         : {};
 
       await axios.post(
-        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
         carData,
         {
           headers: headers,
@@ -196,7 +189,7 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setSuccessMessage("Car added successfully!");
 
       const response = await axios.get(
-        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
         {
           headers: headers,
         }
@@ -219,7 +212,7 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         : {};
 
       await axios.put(
-        `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
+        `https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
         formData,
         {
           headers: headers,
@@ -228,7 +221,7 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       setSuccessMessage("Car updated successfully!");
 
       const response = await axios.get(
-        "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+        "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
         {
           headers: headers,
         }
@@ -249,9 +242,8 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
               Authorization: `Bearer ${localStorage.getItem("tokenBinar")}`,
             }
           : {};
-        console.log(carToDelete.id);
         await axios.delete(
-          `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${carToDelete.id}`,
+          `https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${carToDelete.id}`,
           {
             headers: headers,
           }
@@ -262,13 +254,12 @@ const CarsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         setCarToDelete(null);
 
         const response = await axios.get(
-          "collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
+          "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars",
           {
             headers: headers,
           }
         );
         const activeCars = response.data.data;
-        console.log(activeCars);
         setCars(activeCars);
       } catch (error) {
         console.error("Error deleting car:", error);

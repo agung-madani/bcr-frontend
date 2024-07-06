@@ -4,9 +4,7 @@ import { useContext } from "react";
 
 const CarsSidebarSection = () => {
   const {
-    showListCars,
     setShowListCars,
-    showAddCars,
     setShowAddCars,
     setShowEditCars,
     setSuccessMessage,
@@ -16,8 +14,6 @@ const CarsSidebarSection = () => {
     setShowAddCars(false);
     setShowEditCars(false);
     setShowListCars(true);
-    console.log(showAddCars);
-    console.log(showListCars);
   };
   return (
     <div

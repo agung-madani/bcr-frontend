@@ -23,23 +23,20 @@ const MainContentEditArea = () => {
   useEffect(() => {
     const fetchCarData = async () => {
       try {
-        console.log("Fetching car data");
         const headers = localStorage.getItem("tokenBinar")
           ? {
               Authorization: `Bearer ${localStorage.getItem("tokenBinar")}`,
             }
           : {};
         const response = await axios.get(
-          `collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
+          `https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/cars/${id}`,
           {
             headers: headers,
           }
         );
         const car = response.data.data;
-        console.log(car);
         for (const key in car) {
           if (Object.prototype.hasOwnProperty.call(car, key)) {
-            console.log(key, car[key]);
             if (key === "availableAt") {
               // Format date without time part
               const formattedDate = car[key].split("T")[0];
@@ -56,7 +53,6 @@ const MainContentEditArea = () => {
 
               // Join all results with comma
               const finalResult = result.join(",");
-              console.log(finalResult);
               setValue(key as keyof CarData, finalResult);
             } else {
               setValue(key as keyof CarData, car[key]);
@@ -74,7 +70,6 @@ const MainContentEditArea = () => {
 
   const onSubmit = async (data: CarData) => {
     try {
-      console.log(data);
       const formData = new FormData();
       formData.append("plate", data.plate);
       formData.append("manufacture", data.manufacture);

@@ -12,7 +12,6 @@ const FilterCarsSection = () => {
   } = useForm();
 
   const onSubmit = (data: Filters) => {
-    console.log(data);
     if (setFilters) {
       setFilters(data);
       handleSearch();

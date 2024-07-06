@@ -18,7 +18,6 @@ const NavBarAdmin = () => {
   const handleLogout = () => {
     localStorage.removeItem("tokenBinar");
     navigate("/login");
-    console.log("Logging out...");
   };
 
   const handleClickToggleSidebar = () => toggleSidebar();

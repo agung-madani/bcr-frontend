@@ -14,13 +14,10 @@ const ListCars = () => {
     showDeleteConfirmation,
     setShowDeleteConfirmation,
     setCarToDelete,
-    showListCars,
     setShowListCars,
-    showAddCars,
     setShowAddCars,
     setSuccessMessage,
     handleDelete,
-    showEditCars,
     setShowEditCars,
   } = useContext(CarsContext);
 
@@ -29,8 +26,6 @@ const ListCars = () => {
     setShowAddCars(true);
     setShowEditCars(false);
     setShowListCars(false);
-    console.log(showAddCars);
-    console.log(showListCars);
   };
 
   const handleShowAllCars = () => {
@@ -68,8 +63,6 @@ const ListCars = () => {
     setShowEditCars(true);
     setSuccessMessage("");
     navigate(`/cars-management/${id}`);
-    console.log(showEditCars);
-    console.log(showListCars);
   };
 
   const filterCars = (car: { available: boolean }) => {

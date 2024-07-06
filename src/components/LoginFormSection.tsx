@@ -1,11 +1,11 @@
 import "../index.css";
 import { useForm, Controller } from "react-hook-form";
-import { CarsContext, loginData } from "../context/CarsContext";
+import { AuthContext, loginData } from "../context/AuthContext";
 import { useContext } from "react";
 import axios from "axios";
 
 const LoginFormSection = () => {
-  const { errorMessage, setErrorMessage } = useContext(CarsContext);
+  const { errorMessage, setErrorMessage } = useContext(AuthContext);
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       email: "",
@@ -16,17 +16,19 @@ const LoginFormSection = () => {
   const onSubmit = (data: loginData) => {
     {
       axios
-        .post("collective-kristel-sawangan-26-6deb48bd.koyeb.app/login", data)
+        .post(
+          "https://collective-kristel-sawangan-26-6deb48bd.koyeb.app/login",
+          data
+        )
         .then((response) => {
           localStorage.setItem("tokenBinar", response.data.token);
           window.location.href = "/cars-management";
         })
         .catch((error) => {
-          console.log(error);
           setErrorMessage(error.response.data.message);
+          reset();
         });
     }
-    reset();
   };
   return (
     <div className="flex-1 flex justify-center items-center bg-neutral-01">

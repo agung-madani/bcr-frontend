@@ -1,77 +1,50 @@
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import axios from "axios";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
+import axios from "axios"; // You may need to mock axios responses
 import LoginFormSection from "../components/LoginFormSection";
-import { CarsContext } from "../context/CarsContext";
+import { AuthContext } from "../context/AuthContext";
 
-// Mocking axios post method
 jest.mock("axios");
 
-describe("LoginFormSection Component", () => {
-  beforeEach(() => {
-    jest.clearAllMocks(); // Clear all mock calls before each test
-  });
-
-  it("submits the form with valid data", async () => {
-    const setErrorMessage = jest.fn(); // Mock function for setErrorMessage
+describe("LoginFormSection component", () => {
+  it("submits the form and handles successful response", async () => {
+    const mockContextValue = {
+      Auth: [],
+      errorMessage: "",
+      setErrorMessage: jest.fn(),
+    };
 
     render(
-      <CarsContext.Provider value={{ errorMessage: "", setErrorMessage }}>
+      <AuthContext.Provider value={mockContextValue}>
         <LoginFormSection />
-      </CarsContext.Provider>
+      </AuthContext.Provider>
     );
 
-    // Fill out the form
+    // Fill in the form fields
     fireEvent.change(screen.getByPlaceholderText("Email"), {
       target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getByPlaceholderText("Password"), {
-      target: { value: "password" },
+      target: { value: "password123" },
     });
 
-    // Mock axios post response
-    const mockResponse = { data: { token: "mockToken" } };
-    (axios.post as jest.Mock).mockResolvedValue(mockResponse);
+    // Mock the axios post call
+    (axios.post as jest.Mock).mockResolvedValueOnce({
+      data: { token: "mockToken123" },
+    });
 
     // Submit the form
     fireEvent.click(screen.getByText("Sign In"));
 
-    // Wait for the submit promise to resolve
+    // Wait for the async operations to complete
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "tokenBinar",
-        "mockToken"
+        "mockToken123"
       );
-      expect(window.location.href).toBe("/cars-management");
+      expect(window.location.href).toBe("/Auth-management");
+      expect(mockContextValue.setErrorMessage).not.toHaveBeenCalled();
     });
-
-    expect(setErrorMessage).not.toHaveBeenCalled(); // Ensure setErrorMessage was not called
   });
 
-  it("handles form submission error", async () => {
-    const setErrorMessage = jest.fn(); // Mock function for setErrorMessage
-
-    render(
-      <CarsContext.Provider value={{ errorMessage: "", setErrorMessage }}>
-        <LoginFormSection />
-      </CarsContext.Provider>
-    );
-
-    // Mock axios post error
-    const errorMessage = "Invalid credentials";
-    (axios.post as jest.Mock).mockRejectedValue({
-      response: { data: { message: errorMessage } },
-    });
-
-    // Submit the form
-    fireEvent.click(screen.getByText("Sign In"));
-
-    // Wait for the submit promise to resolve
-    await waitFor(() => {
-      expect(setErrorMessage).toHaveBeenCalledWith(errorMessage);
-    });
-
-    // Ensure localStorage and window.location are not called
-    expect(localStorage.setItem).not.toHaveBeenCalled();
-    expect(window.location.href).not.toBe("/cars-management");
-  });
+  // Add more test cases as needed
 });

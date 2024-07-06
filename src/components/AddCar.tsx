@@ -10,7 +10,6 @@ const AddCar = () => {
 
   const onSubmit = async (data: CarData) => {
     try {
-      console.log(data);
       const formData = new FormData();
       formData.append("plate", data.plate);
       formData.append("manufacture", data.manufacture);
